@@ -1,0 +1,10 @@
+{
+  "name": "ortho-smile-design",
+  "version": "1.0.0",
+  "description": "Site vitrine + réservation en ligne + dashboard (Firebase) du cabinet Ortho Smile Design",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED",
+  "private": true
+}

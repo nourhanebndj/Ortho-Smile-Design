@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Espace cabinet — Ortho Smile Design</title>
+  <link rel="icon" href="../assets/logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- Connexion -->
+<div class="login" id="login">
+  <form class="login-box" id="loginForm">
+    <img src="../assets/logo.jpg" alt="Ortho Smile Design" class="login-logo">
+    <h1>Espace cabinet</h1>
+    <p class="muted">Connectez-vous pour accéder au tableau de bord.</p>
+    <label>E-mail<input type="email" name="email" autocomplete="username" required autofocus></label>
+    <label>Mot de passe<input type="password" name="password" autocomplete="current-password" required></label>
+    <p class="err" id="loginErr"></p>
+    <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-right-to-bracket"></i> Se connecter</button>
+    <a href="#" class="back" id="forgot">Mot de passe oublié ?</a>
+    <a href="../../" class="back"><i class="fa-solid fa-arrow-left"></i> Retour au site</a>
+  </form>
+</div>
+
+<!-- Application -->
+<div class="app" id="app" hidden>
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <span class="sb-logo"><img src="../assets/logo.jpg" alt=""></span>
+      <div style="min-width:0"><strong>Ortho Smile</strong><small id="userEmail" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Espace cabinet</small></div>
+    </div>
+    <nav class="sb-nav" id="sbNav">
+      <a data-view="dashboard"><i class="fa-solid fa-chart-pie"></i> Tableau de bord</a>
+      <a data-view="calendar"><i class="fa-regular fa-calendar-days"></i> Calendrier</a>
+      <a data-view="appointments"><i class="fa-regular fa-calendar-check"></i> Rendez-vous <span class="badge" id="pendingBadge" hidden></span></a>
+      <a data-view="patients"><i class="fa-solid fa-user-group"></i> Patients & versements</a>
+      <a data-view="services"><i class="fa-solid fa-tooth"></i> Services</a>
+      <a data-view="stock"><i class="fa-solid fa-boxes-stacked"></i> Stock <span class="badge warn" id="stockBadge" hidden></span></a>
+      <a data-view="accounting"><i class="fa-solid fa-calculator"></i> Comptabilité</a>
+      <a data-view="stats"><i class="fa-solid fa-chart-line"></i> Statistiques</a>
+      <a data-view="settings"><i class="fa-solid fa-gear"></i> Paramètres</a>
+    </nav>
+    <div class="sb-foot">
+      <a href="../../" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Voir le site</a>
+      <a data-action="logout"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</a>
+    </div>
+  </aside>
+  <div class="sb-overlay" id="sbOverlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+      <div>
+        <h1 id="viewTitle">Tableau de bord</h1>
+        <p class="muted" id="todayLabel"></p>
+      </div>
+      <div class="top-actions">
+        <button class="btn btn-light" data-action="refresh" title="Actualiser"><i class="fa-solid fa-rotate"></i></button>
+        <button class="btn btn-primary" data-action="newAppt"><i class="fa-solid fa-plus"></i> <span class="hide-sm">Nouveau RDV</span></button>
+      </div>
+    </header>
+    <section class="content" id="content"></section>
+  </div>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box" id="modalBox"></div></div>
+<div class="toasts" id="toasts"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

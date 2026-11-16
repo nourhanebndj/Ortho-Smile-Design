@@ -1,0 +1,15 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json", "firestore.rules", "firestore.indexes.json", "server.js", "package.json",
+      "demarrer.bat", "LISEZ-MOI.md", "orthosmile_logo.jpg", "**/.*", "**/node_modules/**"
+    ],
+    "redirects": [{ "source": "/admin", "destination": "/public/admin/", "type": 301 }],
+    "headers": [{ "source": "**/*.@(js|css|html)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }]
+  }
+}
