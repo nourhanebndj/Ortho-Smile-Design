@@ -39,8 +39,20 @@ Le site sera disponible sur **https://ortho-smile-design.web.app** (dashboard : 
 
 ## Sécurité (règles Firestore)
 - Le public peut **lire** uniquement : infos du cabinet, services, jours fermés et créneaux occupés (sans nom ni téléphone).
-- Le public peut seulement **créer** une demande de rendez-vous « en attente » ; un créneau déjà pris est refusé par Firestore.
-- Patients, versements, stock, comptabilité, statistiques : **réservés aux comptes connectés** (créés dans la console).
+- Le public peut seulement **créer** une demande de rendez-vous « en attente », avec validation stricte : nom sans caractères `< > { }`, téléphone au bon format, message limité, date entre aujourd'hui et +92 jours, motif existant, champs imposés. Un créneau déjà pris est refusé.
+- Patients, versements, stock, comptabilité, statistiques : **réservés aux comptes e-mail/mot de passe** créés dans la console (l'inscription publique est désactivée).
+
+## Sécurité du site (en-têtes HTTP, `vercel.json`)
+- **Content-Security-Policy** : seuls le site, Firebase, Google Fonts/Maps/Analytics et cdnjs peuvent charger du code → bloque l'injection de scripts (XSS).
+- **HSTS** (HTTPS obligatoire), **X-Frame-Options / frame-ancestors** (anti-clickjacking), **nosniff**, **Referrer-Policy**, **Permissions-Policy** (caméra, micro, géolocalisation… désactivés).
+- **SRI** : Font Awesome et Chart.js sont vérifiés par empreinte ; un fichier modifié sur le CDN serait refusé.
+- Dashboard : non indexé, jamais mis en cache, **déconnexion automatique après 30 min d'inactivité**, mot de passe d'au moins 10 caractères (lettres + chiffres) exigé au changement.
+
+## Recommandations à faire dans les consoles
+1. **App Check (reCAPTCHA)** dans Firebase : bloque les robots qui enverraient de fausses réservations en masse.
+2. **Restreindre la clé API** dans Google Cloud → *API et services* → *Identifiants* : n'autoriser que `ortho-smile-design.vercel.app/*` et `localhost`.
+3. **Mot de passe fort** pour le compte du cabinet, et ne jamais le partager par message.
+4. Exporter régulièrement les données (Firestore → Import/Export, nécessite la formule Blaze).
 
 ## Structure Firestore
 | Collection | Contenu |
