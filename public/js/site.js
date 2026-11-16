@@ -268,7 +268,9 @@ const MAX_DAYS_AHEAD = 90;
     if (!body.serviceId) return (err.textContent = 'Veuillez choisir un motif de consultation.');
     if (!body.date || !body.time) return (err.textContent = 'Veuillez sélectionner une date et une heure.');
     if (body.name.trim().length < 3) return (err.textContent = 'Veuillez indiquer votre nom complet.');
-    if (body.phone.replace(/\D/g, '').length < 9) return (err.textContent = 'Veuillez indiquer un numéro de téléphone valide.');
+    if (body.phone.replace(/\D/g, '').length < 9 || !/^[0-9+ ().-]{9,30}$/.test(body.phone.trim())) return (err.textContent = 'Veuillez indiquer un numéro de téléphone valide (chiffres uniquement).');
+    if (/[<>{}]/.test(body.name)) return (err.textContent = 'Le nom contient des caractères non autorisés.');
+    if (/[<>]/.test(body.notes)) return (err.textContent = 'Le message contient des caractères non autorisés (< ou >).');
     const btn = $('#bSubmit'); btn.disabled = true; btn.innerHTML = '<span class="spin" style="border-color:rgba(255,255,255,.4);border-top-color:#fff"></span> Envoi…';
     if (body.website) return; // anti-spam (champ invisible rempli par les robots)
     if (body.date < state.today || daySlots(body.date).slots.find((s) => s.time === body.time)?.status !== 'free') return (err.textContent = 'Ce créneau n’est plus disponible, choisissez-en un autre.');

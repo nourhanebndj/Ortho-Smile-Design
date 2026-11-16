@@ -589,9 +589,12 @@ import {
       <tr><td>Soin</td><td>${esc(t?.label || 'Général')}</td></tr><tr><td>Mode de paiement</td><td>${esc(x.method)}</td></tr>${x.note ? `<tr><td>Note</td><td>${esc(x.note)}</td></tr>` : ''}
       <tr class="total"><td>Montant versé</td><td>${money(x.amount)}</td></tr></table>
       <table><tr><td>Total des soins</td><td>${money(fin.total)}</td></tr><tr><td>Total versé à ce jour</td><td>${money(fin.paid)}</td></tr><tr><td>Reste à payer</td><td>${money(fin.rest)}</td></tr></table>
-      <div class="sign"><div>Signature du patient</div><div>Cachet & signature du cabinet</div></div>
-      <script>window.onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`);
+      <div class="sign"><div>Signature du patient</div><div>Cachet & signature du cabinet</div></div></body></html>`);
     w.document.close();
+    // impression lancée depuis cette page : aucun script dans la fenêtre du reçu (compatible CSP)
+    const img = w.document.querySelector('img');
+    const go = () => setTimeout(() => { try { w.focus(); w.print(); } catch {} }, 250);
+    if (img && !img.complete) { img.onload = go; img.onerror = go; } else go();
   }
 
   /* =================================================================== SERVICES */
@@ -879,7 +882,7 @@ import {
     $('#fPwd').addEventListener('submit', async (e) => {
       e.preventDefault(); const f = e.target; const err = $('#pwdErr'); err.textContent = '';
       if (f.next.value !== f.confirm.value) return (err.textContent = 'Les deux mots de passe ne correspondent pas.');
-      if (f.next.value.length < 6) return (err.textContent = 'Le nouveau mot de passe doit contenir au moins 6 caractères.');
+      if (f.next.value.length < 10 || !/[A-Za-z]/.test(f.next.value) || !/\d/.test(f.next.value)) return (err.textContent = 'Le nouveau mot de passe doit contenir au moins 10 caractères, dont des lettres et des chiffres.');
       try { await changePassword(f.current.value, f.next.value); f.reset(); toast('Mot de passe modifié'); } catch (x) { err.textContent = authMsg(x); }
     });
   }
@@ -1010,6 +1013,18 @@ import {
     try { await sendPasswordResetEmail(auth, email); $('#loginErr').textContent = ''; toast('E-mail de réinitialisation envoyé'); }
     catch (err) { $('#loginErr').textContent = authMsg(err); }
   });
+
+  // Déconnexion automatique après 30 minutes sans activité (poste partagé au cabinet)
+  const IDLE_MS = 30 * 60 * 1000;
+  let lastActivity = Date.now();
+  ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => addEventListener(ev, () => { lastActivity = Date.now(); }, { passive: true }));
+  setInterval(async () => {
+    if (!auth.currentUser || Date.now() - lastActivity < IDLE_MS) return;
+    lastActivity = Date.now();
+    closeModal();
+    await signOut(auth);
+    showLogin('Vous avez été déconnecté(e) après 30 minutes d’inactivité.');
+  }, 30000);
 
   ACTIONS.logout = async () => { await signOut(auth); location.hash = ''; };
   ACTIONS.refresh = async () => { await reload(); toast('Données synchronisées en temps réel'); };

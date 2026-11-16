@@ -91,7 +91,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha384-t1nt8BQoYMLFN5p42tRAtuAAFQaCQODekUVeKKZrEnEyp4H2R0RHFz0KWpmj7i8g" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="./public/css/style.css">
 </head>
 <body>
@@ -274,10 +274,10 @@
         <div class="b-step"><span>4</span> Vos coordonnées</div>
         <form id="bookingForm" class="b-form" novalidate>
           <div class="f-row">
-            <label>Nom et prénom *<input name="name" required autocomplete="name" placeholder="Ex : Amina Benali"></label>
-            <label>Téléphone *<input name="phone" required type="tel" autocomplete="tel" placeholder="06 XX XX XX XX"></label>
+            <label>Nom et prénom *<input name="name" required maxlength="120" autocomplete="name" placeholder="Ex : Amina Benali"></label>
+            <label>Téléphone *<input name="phone" required type="tel" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="06 XX XX XX XX"></label>
           </div>
-          <label>Message (facultatif)<textarea name="notes" rows="2" placeholder="Précisez votre besoin, une douleur, une première visite…"></textarea></label>
+          <label>Message (facultatif)<textarea name="notes" rows="2" maxlength="1000" placeholder="Précisez votre besoin, une douleur, une première visite…"></textarea></label>
           <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="b-summary" id="bSummary"><i class="fa-regular fa-calendar"></i> Aucun créneau sélectionné</div>
           <p class="form-error" id="bError" role="alert"></p>
