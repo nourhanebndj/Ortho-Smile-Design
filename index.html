@@ -15,16 +15,18 @@
 <body>
 
 <!-- Barre d'info -->
-<div class="topbar">
-  <div class="container topbar-inner">
-    <div class="topbar-info">
-      <span><i class="fa-solid fa-location-dot"></i> <span data-s="address">502 Logements, El Hadjar, Annaba</span></span>
-      <span class="hide-sm"><i class="fa-regular fa-clock"></i> Sam – Jeu : 09h00 – 17h00</span>
-    </div>
-    <div class="topbar-social">
-      <a data-href="facebook" href="https://www.facebook.com/profile.php?id=61594913084469" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-      <a data-href="tiktok" href="https://www.tiktok.com/@chaima.ortho0" target="_blank" rel="noopener" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-      <a class="tel-link" href="tel:0655772371"><i class="fa-solid fa-phone"></i> <span data-s="phone">0655 77 23 71</span></a>
+<div class="topbar" aria-label="Informations du cabinet">
+  <div class="ticker" id="ticker">
+    <div class="ticker-track" id="tickerTrack">
+      <ul class="ticker-group">
+        <li><i class="fa-solid fa-location-dot"></i> <span data-s="address">502 Logements, El Hadjar, Annaba</span></li>
+        <li><i class="fa-regular fa-clock"></i> <span data-hours>Sam – Jeu : 09h00 – 17h00</span></li>
+        <li><a class="tel-link" href="tel:0655772371"><i class="fa-solid fa-phone"></i> <span data-s="phone">0655 77 23 71</span></a></li>
+        <li><i class="fa-regular fa-calendar-check"></i> Réservation en ligne 24h/24</li>
+        <li><i class="fa-solid fa-wallet"></i> Paiement par versements</li>
+        <li><a data-href="facebook" href="https://www.facebook.com/profile.php?id=61594913084469" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i> Facebook</a></li>
+        <li><a data-href="tiktok" href="https://www.tiktok.com/@chaima.ortho0" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i> @chaima.ortho0</a></li>
+      </ul>
     </div>
   </div>
 </div>
@@ -124,7 +126,8 @@
       <h2>Des traitements complets pour toute la famille</h2>
       <p>De la première consultation au sourire final, nous vous proposons une prise en charge globale.</p>
     </div>
-    <div class="services-grid" id="servicesGrid"></div>
+    <div class="services-grid reveal" id="servicesGrid" aria-roledescription="carrousel"></div>
+    <div class="slider-dots" id="servicesDots" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -196,7 +199,7 @@
           <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="b-summary" id="bSummary"><i class="fa-regular fa-calendar"></i> Aucun créneau sélectionné</div>
           <p class="form-error" id="bError" role="alert"></p>
-          <button class="btn btn-primary btn-lg btn-block" type="submit" id="bSubmit"><i class="fa-solid fa-paper-plane"></i> Envoyer ma demande de rendez-vous</button>
+          <button class="btn btn-primary btn-lg btn-block" type="submit" id="bSubmit"><i class="fa-solid fa-paper-plane"></i> <span>Envoyer ma demande<span class="long-label"> de rendez-vous</span></span></button>
           <p class="fine">En envoyant ce formulaire, vous acceptez d’être contacté(e) par le cabinet au sujet de votre rendez-vous.</p>
         </form>
       </div>

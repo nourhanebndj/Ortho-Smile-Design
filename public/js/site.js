@@ -82,19 +82,88 @@ const MAX_DAYS_AHEAD = 90;
     const tel = 'tel:' + String(s.phone || '').replace(/\s/g, '');
     $$('.tel-link').forEach((el) => { el.href = tel; });
     if (s.whatsapp) $$('.wa-link').forEach((el) => { el.href = 'https://wa.me/' + s.whatsapp.replace(/\D/g, ''); });
+    setupTicker(); // les textes ont pu changer de longueur
   }
 
+  /* ---------------- soins : grille (ordinateur) / carrousel infini (mobile) ---------------- */
+  const grid = $('#servicesGrid'), dots = $('#servicesDots');
+  const mobile = matchMedia('(max-width: 768px)');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const slider = { n: 0, timer: null, pauseUntil: 0 };
+
   function renderServices() {
-    $('#servicesGrid').innerHTML = state.services.map((s) => `
-      <article class="service reveal">
+    slider.n = state.services.length;
+    const card = (s, clone) => `
+      <article class="service${clone ? ' clone' : ''}"${clone ? ' aria-hidden="true"' : ''}>
         <i class="fa-solid ${esc(s.icon || 'fa-tooth')}"></i>
         <h3>${esc(s.name)}</h3>
         <p>${esc(s.description)}</p>
-        <a href="#rendez-vous" data-service="${esc(s.id)}">Réserver <i class="fa-solid fa-arrow-right"></i></a>
-      </article>`).join('');
-    $$('#servicesGrid [data-service]').forEach((a) => a.addEventListener('click', () => { $('#bService').value = a.dataset.service; updateSummary(); }));
-    observeReveal();
+        <a href="#rendez-vous" data-service="${esc(s.id)}"${clone ? ' tabindex="-1"' : ''}>Réserver <i class="fa-solid fa-arrow-right"></i></a>
+      </article>`;
+    const set = (clone) => state.services.map((s) => card(s, clone)).join('');
+    // 3 séries identiques : [copie][originaux][copie] → on reste toujours dans la série du milieu
+    grid.innerHTML = set(true) + set(false) + set(true);
+    dots.innerHTML = state.services.map(() => '<span></span>').join('');
+    setupSlider();
   }
+  grid.addEventListener('click', (e) => {
+    const a = e.target.closest('[data-service]'); if (!a) return;
+    $('#bService').value = a.dataset.service; updateSummary();
+  });
+  const cardStep = () => { const c = grid.querySelector('.service:not(.clone)'); return c ? c.offsetWidth + (parseFloat(getComputedStyle(grid).columnGap) || 0) : 0; };
+  const setWidth = () => cardStep() * slider.n;
+  function updateDots() {
+    if (!slider.n) return;
+    const i = ((Math.round((grid.scrollLeft - setWidth()) / cardStep()) % slider.n) + slider.n) % slider.n;
+    [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
+  }
+  function loopBack() {
+    if (!mobile.matches || !slider.n) return;
+    const w = setWidth(), st = cardStep();
+    if (grid.scrollLeft < w - st / 2) grid.scrollLeft += w;
+    else if (grid.scrollLeft > 2 * w - st / 2) grid.scrollLeft -= w;
+    updateDots();
+  }
+  function setupSlider() {
+    clearInterval(slider.timer);
+    if (!mobile.matches || !slider.n) { grid.scrollLeft = 0; return; }
+    grid.scrollLeft = setWidth();
+    updateDots();
+    if (reduced.matches) return;
+    slider.timer = setInterval(() => {
+      if (Date.now() < slider.pauseUntil || document.hidden) return;
+      const r = grid.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return; // hors écran
+      grid.scrollBy({ left: cardStep(), behavior: 'smooth' });
+    }, 3200);
+  }
+  let scrollTimer;
+  grid.addEventListener('scroll', () => { clearTimeout(scrollTimer); scrollTimer = setTimeout(loopBack, 140); }, { passive: true });
+  ['pointerdown', 'touchstart', 'wheel'].forEach((ev) => grid.addEventListener(ev, () => { slider.pauseUntil = Date.now() + 7000; }, { passive: true }));
+  mobile.addEventListener('change', setupSlider);
+
+  /* ---------------- barre d'annonce : défilement infini ---------------- */
+  function setupTicker() {
+    const track = $('#tickerTrack'); const group = track.querySelector('.ticker-group:not(.clone)');
+    track.querySelectorAll('.clone').forEach((c) => c.remove());
+    const gw = group.offsetWidth; if (!gw) return;
+    const copies = Math.ceil(innerWidth / gw) + 1;
+    for (let i = 0; i < copies; i++) {
+      const c = group.cloneNode(true);
+      c.classList.add('clone'); c.setAttribute('aria-hidden', 'true');
+      c.querySelectorAll('a').forEach((a) => (a.tabIndex = -1));
+      track.append(c);
+    }
+    track.style.setProperty('--shift', `${gw}px`);
+    track.style.setProperty('--dur', `${Math.max(12, gw / 45)}s`);
+  }
+  setupTicker();
+  document.fonts?.ready.then(setupTicker);
+  let resizeTimer, lastW = innerWidth;
+  addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { if (innerWidth === lastW) return; lastW = innerWidth; setupTicker(); setupSlider(); }, 200);
+  });
   function renderServiceSelect() {
     $('#bService').innerHTML = '<option value="">— Choisissez un motif —</option>' +
       state.services.map((s) => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
@@ -220,7 +289,7 @@ const MAX_DAYS_AHEAD = 90;
       if (x.code === 'permission-denied') { err.textContent = 'Ce créneau vient d’être réservé ou n’est plus disponible. Merci d’en choisir un autre.'; state.time = ''; loadSlots(); loadMonth(); updateSummary(); }
       else err.textContent = 'Connexion impossible. Vérifiez votre réseau ou appelez-nous.';
     }
-    finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Envoyer ma demande de rendez-vous'; }
+    finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>Envoyer ma demande<span class="long-label"> de rendez-vous</span></span>'; }
   });
   $('#confirmClose').addEventListener('click', () => $('#confirmModal').classList.remove('open'));
   $('#confirmModal').addEventListener('click', (e) => { if (e.target.id === 'confirmModal') e.target.classList.remove('open'); });
