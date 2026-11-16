@@ -1,17 +1,11 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "",
-  "installCommand": "",
-  "outputDirectory": ".",
+  "buildCommand": "node build.js",
+  "outputDirectory": "dist",
   "redirects": [
     { "source": "/admin", "destination": "/public/admin/", "permanent": false }
   ],
   "headers": [
-    {
-      "source": "/(.*)\.(html|js|css)",
-      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
-    },
     {
       "source": "/public/admin/(.*)",
       "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
