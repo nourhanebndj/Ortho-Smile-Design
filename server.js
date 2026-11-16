@@ -11,9 +11,9 @@ const path = require('path');
 
 const PORT = Number(process.env.PORT) || 3000;
 const ROOT = __dirname;
-const ALLOWED = [path.join(ROOT, 'index.html'), path.join(ROOT, 'public') + path.sep];
+const ALLOWED = [...['index.html', 'favicon.ico', 'robots.txt', 'sitemap.xml', 'site.webmanifest'].map((f) => path.join(ROOT, f)), path.join(ROOT, 'public') + path.sep];
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8',
-  '.json': 'application/json', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.webp': 'image/webp' };
+  '.json': 'application/json', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon', '.webp': 'image/webp', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8', '.webmanifest': 'application/manifest+json' };
 
 http.createServer((req, res) => {
   let pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);

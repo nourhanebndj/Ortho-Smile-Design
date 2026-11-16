@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /public/admin/
+
+Sitemap: https://ortho-smile-design.vercel.app/sitemap.xml
